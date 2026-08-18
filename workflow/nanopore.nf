@@ -23,12 +23,12 @@ workflow NANOPORE {
         ch_clean_reads = READ_QC.out.clean_reads.filter { meta, fastq -> fastq.countFastq() > 0 }
 
         // taxonomic classification
-        TAX_CLASS(ch_clean_reads)
+        // TAX_CLASS(ch_clean_reads)
 
         // assembly
-        ASSEMBLY_NANOPORE(ch_clean_reads)
+        // ASSEMBLY_NANOPORE(ch_clean_reads)
         
     emit:
-        assembly = ASSEMBLY_NANOPORE.out
+        // assembly = ASSEMBLY_NANOPORE.out
         reads = ch_clean_reads
 }
