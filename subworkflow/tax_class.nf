@@ -3,7 +3,7 @@ include { centrifuge; krona; aggregate_krona_split; aggregate_kreport_split } fr
 include { seqkit_fx2tab } from '../modules/local/seqkit/fx2tab.nf'
 include { nanocomp } from '../modules/local/nanopore-base.nf'
 
-workflow READ_QC {
+workflow TAX_CLASS {
     take: 
         reads
     main:
