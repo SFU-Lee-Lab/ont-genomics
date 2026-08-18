@@ -4,9 +4,9 @@ process combine {
     label "process_low"
 
     input:
-        tuple val(sample_id), path(reads)
+        tuple val(meta), path(reads)
     output:
-        tuple val(sample_id), file("${sample_id}.{fastq,fastq.gz}")
+        tuple val(meta), file("${meta.id}.{fastq,fastq.gz}")
     shell:
         """
         sample=\$(ls ${reads} | head -n 1)
@@ -17,69 +17,14 @@ process combine {
             ext="fastq"
             cat_cmd="cat"
         fi
-        cat ${reads}/*.\$ext > ${sample_id}.\$ext
+        cat ${reads}/*.\$ext > ${meta.id}.\$ext
         # verify file integrity
-        \$cat_cmd ${sample_id}.\$ext | \
+        \$cat_cmd ${meta.id}.\$ext | \
             awk 'NR%4==2 || NR%4==0' | \
             paste - - | \
             awk '{if(length(\$1) != length(\$2)) {print "Read " NR/4 " has different number of bases and quality scores"; exit 1}}' \
             > /dev/null
-        \$cat_cmd ${sample_id}.\$ext > /dev/null
-        """
-}
-
-process fastq_watch {
-    tag "Collecting FASTQ files"
-    label "process_low"
-    maxForks 1
-
-    input:
-        path(reads)
-    output:
-        path("latest_${task.index}/")
-    script:
-        def file = reads[0]
-        def ext = file.getExtension()
-        def new_fastq = reads.first()
-        def id = new_fastq.getSimpleName()
-        def barcode = id.replaceAll('.*_TIME_', '')
-        def timestamp = id.replaceAll('_TIME_.*', '')
-        def dir = 'latest_' + task.index
-        def out_fastq = ext == 'gz' ? "${timestamp}_TIME_${barcode}.fastq.gz" : "${timestamp}_TIME_${barcode}.fastq"
-        // println "Task ${task.index}: Combining "+ new_fastq + ", " + cumulative_fastq
-        println "Task ${task.index}: Adding " + new_fastq + " to " + dir
-        """
-        # create output dir
-        mkdir ${dir}
-        # copy symlink for new_fastq
-        cp -P ${new_fastq} ${dir}/${out_fastq}
-        # create symlinks from previous i-1 iteration
-        if test ${task.index} -gt 1; then
-        find -L \$PWD/latest_\$(( ${task.index} - 1)) -type f -name '*.fastq*' | \
-        parallel -j 8 'f={}; cp -a \$f ${dir}/\$(basename \$f)' \\;
-        fi
-        """
-}
-
-process combine_watch {
-    tag "Combining FASTQ files"
-    label "process_low"
-
-    input:
-        path(dir)
-    output:
-        path("*.{fastq,fastq.gz}")
-    script:
-        """
-        # find the latest barcode
-        latest=\$(find -L ${dir} -maxdepth 1 -type f -name '*.fastq*' -exec sh -c 'echo \$(basename {})' \\; | sort -r | head -n1 | sed 's/.fastq.*//g')
-        barcode=\$(echo \${latest} | sed 's/.*_TIME_//g')
-        timestamp=\$(echo \${latest} | sed 's/_TIME_.*//g')
-        sample_id=\$(echo \${timestamp}_TIME_\${barcode})
-        # search for all fastq associated with latest barcode
-        fastq=\$(find -L \$PWD/${dir} -maxdepth 1 -type f -name "*\${barcode}.fastq*")
-        # concatenate and deduplicate
-        cat \${fastq} | seqkit rmdup -n -o \${sample_id}.fastq.gz
+        \$cat_cmd ${meta.id}.\$ext > /dev/null
         """
 }
 
