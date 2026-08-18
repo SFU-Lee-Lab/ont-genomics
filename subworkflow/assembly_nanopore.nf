@@ -11,22 +11,22 @@ workflow ASSEMBLY_NANOPORE {
         asm_reads = reads.filter{ it[1].countFastq() >= params.min_tr }
         
         // run assembly workflow
-        flye(asm_reads, flye_opts)
+        flye(asm_reads)
 
         // run polishing
         if (params.gpu) {
 
-        assembly.small
+            assembly
             | join(asm_reads)
             | medaka_gpu
             | set { polished_asm }
 
         } else {
             
-            assembly.small
-                | join(asm_reads)
-                | medaka
-                | set { polished_asm }
+            assembly
+            | join(asm_reads)
+            | medaka
+            | set { polished_asm }
 
         }
         
