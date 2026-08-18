@@ -1,40 +1,34 @@
 // import modules
-import java.nio.file.Files
-include { porechop; combine; nanoq; combine_watch; fastq_watch } from '../modules/local/nanopore-base.nf'
+include { combine } from '../modules/local/nanopore-base.nf'
 
 // import subworkflow
-include { ASSEMBLY_nanopore } from '../subworkflow/genome_assembly.nf'
+include { ASSEMBLY_NANOPORE } from '../subworkflow/assembly_nanopore.nf'
+include { READ_QC } from '../subworkflow/read_qc.nf'
+include { TAX_CLASS } from '../subworkflow/tax_class.nf'
 
 // define nanopore workflow
-workflow nanopore {
+workflow NANOPORE {
     
     take: data
 
     main:
         
         // combine reads
-        combine(data)
-            | set { combined_reads }
-        
+        combined_reads = combine(data)
 
-        // trimming
-        if ( params.trim ) { 
-            
-            reads = porechop(combined_reads)
-
-        } else {
-            
-            reads = combined_reads
-
-        }
+        // Raw read QC
+        READ_QC(combined_reads)
 
         // keep only non-empty FASTQ
-        reads_out = nanoq(reads).filter { id, fastq -> fastq.countFastq() > 0 }
+        ch_clean_reads = READ_QC.out.clean_reads.filter { meta, fastq -> fastq.countFastq() > 0 }
+
+        // taxonomic classification
+        // TAX_CLASS(ch_clean_reads)
 
         // assembly
-        ASSEMBLY_nanopore(reads_out)
+        // ASSEMBLY_NANOPORE(ch_clean_reads)
         
     emit:
-        assembly = ASSEMBLY_nanopore.out
-        reads = reads_out
+        // assembly = ASSEMBLY_NANOPORE.out
+        reads = ch_clean_reads
 }
