@@ -1,6 +1,6 @@
 // import workflows
 include { ANNOT } from '../subworkflow/genome_annotation.nf'
-include { ASSEMBLY_QC; READ_QC } from '../subworkflow/sequence_qc.nf'
+include { ASSEMBLY_QC } from '../subworkflow/assembly_qc.nf'
 
 // import modules
 include { combine_res } from '../modules/local/parse.nf'
