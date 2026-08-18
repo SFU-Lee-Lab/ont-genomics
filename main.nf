@@ -8,7 +8,7 @@ import java.nio.file.Paths
 WorkflowMain.initialise(workflow, params, log)
 
 // import workflows
-include { nanopore } from './workflow/nanopore.nf'
+include { NANOPORE } from './workflow/nanopore.nf'
 include { post_asm_process } from './workflow/post_asm_process.nf'
 include { rename_FASTQ } from './modules/local/rename_FASTQ/rename_FASTQ.nf'
 include { taxonkit_name2taxid } from './modules/local/taxonkit/name2taxid.nf'
