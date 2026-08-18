@@ -82,11 +82,11 @@ class WorkflowMain {
 
         // check if centrifuge database exists
         // when --qc is invoked
-        if (params.qc) {
-            if (!Utils.fileExists(params.centrifuge)) {
-                log.error "Please provide a valid path to the Centrifuge database"
-                System.exit(1)
-            }
-        }
+        // if (params.qc) {
+        //     if (!Utils.fileExists(params.centrifuge)) {
+        //         log.error "Please provide a valid path to the Centrifuge database"
+        //         System.exit(1)
+        //     }
+        // }
     }
 }
