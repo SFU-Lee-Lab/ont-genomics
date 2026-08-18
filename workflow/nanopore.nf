@@ -13,26 +13,8 @@ workflow nanopore {
     main:
         
         // combine reads
-        if ( params.watchdir ) {
-            
-            fastq_watch.scan(data)
-                | combine_watch
-                | map { file ->
-                    // id = file.getName().replaceAll('.*\\d+\\.part_', '').replaceAll('.fastq.gz', '')
-                    // id = file.getName().replaceAll('\\.part_', '_TIME_').replaceAll('.fastq.gz', '')
-                    id = file.getSimpleName()
-                    tuple(id, file)
-                }
-                | set { combined_reads }
-
-            // combined_reads.subscribe{ println "Detected: ${it}"}
-
-        } else {
-
-            combine(data)
-                | set { combined_reads }
-
-        }
+        combine(data)
+            | set { combined_reads }
         
 
         // trimming
