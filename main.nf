@@ -153,19 +153,11 @@ workflow {
 
 
     // start analysis
-    taxid = taxonkit_name2taxid(params.taxon_name)
+    // taxid = taxonkit_name2taxid(params.taxon_name)
 
-    if ( params.seq_platform == "nanopore" ) {
-        
-        nanopore(data.reads)
-        post_asm_process_r(nanopore.out.assembly, nanopore.out.reads, taxid, false)
-
-    } else if ( params.seq_platform == "illumina" ) {
-        
-        illumina(data.reads)
-        post_asm_process_r(illumina.out.assembly, illumina.out.reads, taxid, false)
-
-    }
+      
+    nanopore(data.reads)
+    post_asm_process_r(nanopore.out.assembly, nanopore.out.reads, false)
 
     // // process genome assembly directly
     post_asm_process_asm(rename_FASTA.out, data.asm.map { id,path -> [id, [] ] }, taxid, true)
