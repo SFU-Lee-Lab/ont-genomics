@@ -1,7 +1,6 @@
 // import modules
-include { metaflye; dragonflye; flye } from '../modules/local/nanopore-assembly.nf'
+include { flye } from '../modules/local/nanopore-assembly.nf'
 include { medaka; medaka_gpu } from '../modules/local/nanopore-polish.nf'
-include { shovill } from '../modules/local/illumina-assembly.nf'
 include { rename_FASTA } from '../modules/local/rename_FASTA/rename_FASTA.nf'
 
 workflow ASSEMBLY_nanopore {
@@ -21,7 +20,6 @@ workflow ASSEMBLY_nanopore {
             
         } else {
             
-            flye_opts = params.gsize ? flye_opts + " -g ${params.gsize} --asm-coverage ${params.asm_cov}" : flye_opts
             flye(asm_reads, flye_opts)
             
             if (!params.nopolish) {
@@ -58,17 +56,4 @@ workflow ASSEMBLY_nanopore {
         }
                
     emit: assembly_out
-}
-
-workflow ASSEMBLY_illumina {
-    take: reads
-    main:
-        // define assembly opts for target wgs and metagenomics
-        shovill_opts=""
-        if (params.meta != 'off') { shovill_opts = shovill_opts + "--opts '--meta'" }
-        // run assembly workflow
-        assembly_out = shovill(reads, shovill_opts)
-        
-    emit:
-        assembly_out
 }
