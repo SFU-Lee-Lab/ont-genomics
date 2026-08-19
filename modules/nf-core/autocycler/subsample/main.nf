@@ -9,9 +9,8 @@ process AUTOCYCLER_SUBSAMPLE {
         'quay.io/biocontainers/autocycler:0.5.2--h3ab6199_0' }"
 
     input:
-    tuple val(meta), path(reads)
-    val genome_size
-
+    tuple val(meta), path(reads), val(genome_size)
+    
     output:
     tuple val(meta), path("$prefix/*.fastq.gz"), emit: subsampled_reads
     tuple val("${task.process}"), val("autocycler"), eval("autocycler --version |  sed 's/^[^ ]* //'"), emit: versions_autocycler, topic: versions
