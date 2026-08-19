@@ -1,89 +1,127 @@
 {
-    "name": "jimmyliu1326/SamnSero_Nextflow",
-    "homePage": "https://github.com/jimmyliu1326/SamnSero_Nextflow",
-    "repos": {
-        "https://github.com/nf-core/modules.git": {
-            "modules": {
-                "nf-core": {
-                    "centrifuger/centrifuger": {
-                        "branch": "master",
-                        "git_sha": "fd621e0378a3692aa31943d0d4bd49c435b9efcf",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "centrifuger/quantification": {
-                        "branch": "master",
-                        "git_sha": "fd621e0378a3692aa31943d0d4bd49c435b9efcf",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "checkm/qa": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "flye": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "gunc/run": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "krona/ktimportkrona": {
-                        "branch": "master",
-                        "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "medaka": {
-                        "branch": "master",
-                        "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "nanoq": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "quast": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "sourmash/gather": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    },
-                    "sourmash/sketch": {
-                        "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": [
-                            "modules"
-                        ]
-                    }
-                }
-            }
+  "name": "jimmyliu1326/SamnSero_Nextflow",
+  "homePage": "https://github.com/jimmyliu1326/SamnSero_Nextflow",
+  "repos": {
+    "https://github.com/nf-core/modules.git": {
+      "modules": {
+        "nf-core": {
+          "autocycler/cluster": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "autocycler/combine": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "autocycler/compress": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "autocycler/resolve": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "autocycler/subsample": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "autocycler/trim": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "bakta/bakta": {
+            "branch": "master",
+            "git_sha": "2080397432fcb0d079121dbacf22ce42ef175cec",
+            "installed_by": ["modules"]
+          },
+          "centrifuger/centrifuger": {
+            "branch": "master",
+            "git_sha": "fd621e0378a3692aa31943d0d4bd49c435b9efcf",
+            "installed_by": ["modules"]
+          },
+          "centrifuger/quantification": {
+            "branch": "master",
+            "git_sha": "fd621e0378a3692aa31943d0d4bd49c435b9efcf",
+            "installed_by": ["modules"]
+          },
+          "checkm/qa": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "flye": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "gunc/run": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "krona/ktimportkrona": {
+            "branch": "master",
+            "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
+            "installed_by": ["modules"]
+          },
+          "krona/ktimporttaxonomy": {
+            "branch": "master",
+            "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
+            "installed_by": ["modules"]
+          },
+          "medaka": {
+            "branch": "master",
+            "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
+            "installed_by": ["modules"]
+          },
+          "miniasm": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "minimap2/align": {
+            "branch": "master",
+            "git_sha": "135d883a43b1a2324b4112cd270cf22e20835533",
+            "installed_by": ["modules"]
+          },
+          "nanoq": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "quast": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "raven": {
+            "branch": "master",
+            "git_sha": "7f2af264386af99e70dc68ced1a46ee759f5756b",
+            "installed_by": ["modules"]
+          },
+          "samtools/view": {
+            "branch": "master",
+            "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+            "installed_by": ["modules"]
+          },
+          "sourmash/gather": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          },
+          "sourmash/sketch": {
+            "branch": "master",
+            "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+            "installed_by": ["modules"]
+          }
         }
+      }
     }
+  }
 }
