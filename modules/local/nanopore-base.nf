@@ -33,12 +33,12 @@ process porechop {
     label "process_medium"
 
     input:
-        tuple val(sample_id), path(reads)
+        tuple val(meta), path(reads)
     output:
-        tuple val(sample_id), file("${sample_id}_trimmed.fastq")
+        tuple val(meta), file("${meta.id}_trimmed.fastq")
     shell:
         """
-        porechop -t ${task.cpus} -i ${reads} -o ${sample_id}_trimmed.fastq
+        porechop -t ${task.cpus} -i ${reads} -o ${meta.id}_trimmed.fastq
         """
 }
 
