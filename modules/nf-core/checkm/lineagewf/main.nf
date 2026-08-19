@@ -1,6 +1,6 @@
-process CHECKM_QA {
+process CHECKM_LINEAGEWF {
     tag "${meta.id}"
-    label 'process_low'
+    label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
     container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
@@ -8,13 +8,14 @@ process CHECKM_QA {
         : 'community.wave.seqera.io/library/checkm-genome:1.2.5--8d1d1a2477a013ce'}"
 
     input:
-    tuple val(meta), path(analysis_dir), path(marker_file), path(coverage_file)
-    path exclude_marker_file
+    tuple val(meta), path(fasta, stageAs: "input_bins/*")
+    val fasta_ext
     path db
 
     output:
-    tuple val(meta), path("${prefix}.txt"), optional: true, emit: output
-    tuple val(meta), path("${prefix}.fasta"), optional: true, emit: fasta
+    tuple val(meta), path("${prefix}"), emit: checkm_output
+    tuple val(meta), path("${prefix}/lineage.ms"), emit: marker_file
+    tuple val(meta), path("${prefix}.tsv"), emit: checkm_tsv
     tuple val("${task.process}"), val('checkm'), eval("checkm 2>&1 | grep '...:::' | sed 's/.*CheckM v//;s/ .*//'"), emit: versions_checkm, topic: versions
 
     when:
@@ -22,23 +23,21 @@ process CHECKM_QA {
 
     script:
     def args = task.ext.args ?: ''
-    prefix = task.ext.prefix ?: "${meta.id}"
     def checkm_db = db ? "export CHECKM_DATA_PATH=${db}" : ""
-    suffix = task.ext.args?.matches(".*-o 9.*|.*--out_file 9.*") ? "fasta" : "txt"
-    def coverage = coverage_file && coverage_file.isFile() ? "--coverage_file ${coverage_file}" : ""
-    def exclude = exclude_marker_file && exclude_marker_file.isFile() ? "--exclude_markers ${exclude_marker_file}" : ""
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     ${checkm_db}
 
     checkm \\
-        qa \\
-        --threads ${task.cpus} \\
-        --file ${prefix}.${suffix} \\
-        ${marker_file} \\
-        ${analysis_dir} \\
-        ${coverage} \\
-        ${exclude} \\
-        ${args}
+        lineage_wf \\
+        -t ${task.cpus} \\
+        -f ${prefix}.tsv \\
+        --tab_table \\
+        --pplacer_threads ${task.cpus} \\
+        -x ${fasta_ext} \\
+        ${args} \\
+        input_bins/ \\
+        ${prefix}
     """
 
     stub:
@@ -46,6 +45,7 @@ process CHECKM_QA {
     """
     mkdir -p checkm_dummy_db
     export CHECKM_DATA_PATH=\$PWD/checkm_dummy_db
-    touch ${prefix}.txt ${prefix}.fasta
+    mkdir ${prefix}/
+    touch ${prefix}/lineage.ms ${prefix}.tsv
     """
 }
