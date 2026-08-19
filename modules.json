@@ -50,7 +50,7 @@
             "git_sha": "fd621e0378a3692aa31943d0d4bd49c435b9efcf",
             "installed_by": ["modules"]
           },
-          "checkm/qa": {
+          "checkm/lineagewf": {
             "branch": "master",
             "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
             "installed_by": ["modules"]
@@ -125,4 +125,3 @@
     }
   }
 }
-
