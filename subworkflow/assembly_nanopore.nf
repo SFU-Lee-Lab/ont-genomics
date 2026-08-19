@@ -1,37 +1,24 @@
 // import modules
-include { flye } from '../modules/local/nanopore-assembly.nf'
-include { medaka; medaka_gpu } from '../modules/local/nanopore-polish.nf'
-include { rename_FASTA } from '../modules/local/rename_FASTA/rename_FASTA.nf'
+include { FLYE } from '../modules/nf-core/flye/main.nf'
+include { MEDAKA } from '../modules/nf-core/medaka/main.nf'
 
 workflow ASSEMBLY_NANOPORE {
     take: reads
     main:
 
         // only perform assemblies on samples with >N reads
-        asm_reads = reads.filter{ it[1].countFastq() >= params.min_tr }
+        ch_asm_reads = reads.filter{ it[1].countFastq() >= params.min_tr }
         
         // run assembly workflow
-        flye(asm_reads)
+        ch_FLYE_mode = Channel.of('--nano-hq').first()
+        FLYE(ch_asm_reads, ch_FLYE_mode)
+        ch_asm = FLYE.out.fasta
 
         // run polishing
-        if (params.gpu) {
-
-            assembly
-            | join(asm_reads)
-            | medaka_gpu
-            | set { polished_asm }
-
-        } else {
-            
-            assembly
-            | join(asm_reads)
-            | medaka
-            | set { polished_asm }
-
-        }
-        
-        assembly_out = polished_asm
+        MEDAKA(ch_asm_reads.join(ch_asm))        
+        ch_polished_asm = MEDAKA.out.assembly
                     
-               
-    emit: assembly_out
+    emit: 
+        raw_asm = ch_asm
+        polished_asm = ch_polished_asm
 }
