@@ -23,20 +23,19 @@ process MINIPOLISH {
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
-    // TODO: check how to handle STDOUT
     minipolish \\
         -t ${task.cpus} \\
-        ${args}
+        ${args} \\
         ${reads} \\
-        ${assembly} >
-        ${prefix}.gfa
+        ${assembly} > \\
+        ${prefix}_polish.gfa
 
-    gzip -c ${prefix}.gfa > ${prefix}.gfa.gz
+    gzip -c ${prefix}_polish.gfa > ${prefix}_polish.gfa.gz
 
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     minipolish: \$(samtools --version |& sed '1!d ; s/samtools //')
-    // END_VERSIONS
+    # cat <<-END_VERSIONS > versions.yml
+    # "${task.process}":
+    #     minipolish: \$(samtools --version |& sed '1!d ; s/samtools //')
+    # END_VERSIONS
     """
 
     stub:
@@ -44,9 +43,9 @@ process MINIPOLISH {
     """
     echo stub | gzip -c > ${prefix}.gfa.gz
 
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     minipolish: \$(samtools --version |& sed '1!d ; s/samtools //')
-    // END_VERSIONS
+    # cat <<-END_VERSIONS > versions.yml
+    #"${task.process}":
+    #    minipolish: \$(samtools --version |& sed '1!d ; s/samtools //')
+    # END_VERSIONS
     """
 }
