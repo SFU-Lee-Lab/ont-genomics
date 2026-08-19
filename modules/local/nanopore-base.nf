@@ -1,6 +1,6 @@
 // basic processes for Nanopore workflows
 process combine {
-    tag "Combining FASTQ files for ${sample_id}"
+    tag "Combining FASTQ files for ${meta.id}"
     label "process_low"
 
     input:
@@ -29,7 +29,7 @@ process combine {
 }
 
 process porechop {
-    tag "Adaptor trimming on ${sample_id}"
+    tag "Adaptor trimming on ${meta.id}"
     label "process_medium"
 
     input:
@@ -39,21 +39,6 @@ process porechop {
     shell:
         """
         porechop -t ${task.cpus} -i ${reads} -o ${meta.id}_trimmed.fastq
-        """
-}
-
-process nanoq {
-    tag "Read filtering on ${sample_id}"
-    label "process_low"
-    cache true
-
-    input:
-        tuple val(meta), path(reads)
-    output:
-        tuple val(meta), file("${meta.id}.filt.fastq.gz")
-    shell:
-        """
-        nanoq -i ${reads} -l ${params.min_rl} -q ${params.min_rq} -O g > ${meta.id}.filt.fastq.gz
         """
 }
 
