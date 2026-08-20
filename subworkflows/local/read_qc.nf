@@ -1,7 +1,7 @@
 // import modules
-include { porechop  } from '../modules/local/nanopore-base.nf'
-include { NANOQ } from '../modules/nf-core/nanoq/main.nf'
-include { nanocomp as nanocomp_before; nanocomp as nanocomp_after; nanocomp as nanocomp_trimmed } from '../modules/local/nanopore-base.nf'
+include { porechop  } from '../../modules/local/nanopore-base.nf'
+include { NANOQ } from '../../modules/nf-core/nanoq/main.nf'
+include { nanocomp as nanocomp_before; nanocomp as nanocomp_after; nanocomp as nanocomp_trimmed } from '../../modules/local/nanopore-base.nf'
 
 // define nanopore workflow
 workflow READ_QC {

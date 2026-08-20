@@ -2,9 +2,9 @@
 include { combine } from '../modules/local/nanopore-base.nf'
 
 // import subworkflow
-include { ASSEMBLY_NANOPORE } from '../subworkflow/assembly_nanopore.nf'
-include { READ_QC } from '../subworkflow/read_qc.nf'
-include { TAX_CLASS } from '../subworkflow/tax_class.nf'
+include { ASSEMBLY_NANOPORE } from '../subworkflows/local/assembly_nanopore.nf'
+include { READ_QC } from '../subworkflows/local/read_qc.nf'
+include { TAX_CLASS } from '../subworkflows/local/tax_class.nf'
 
 // define nanopore workflow
 workflow NANOPORE {
@@ -31,6 +31,6 @@ workflow NANOPORE {
         ASSEMBLY_NANOPORE(ch_clean_reads)
         
     emit:
-        assembly = ASSEMBLY_NANOPORE.out.polished_asm
+        //assembly = ASSEMBLY_NANOPORE.out.polished_asm
         reads = ch_clean_reads
 }

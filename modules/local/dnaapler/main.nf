@@ -12,12 +12,12 @@ process DNAAPLER {
     tuple val(meta), path(assembly)
 
     output:
-    tuple val(meta), path("${prefix}_reoriented.gfa.gz"), emit: gfa
-    tuple val(meta), path("${prefix}_all_reorientation_summary.tsv"), emit: tsv
-    tuple val(meta), path("${prefix}_MMseqs2_output.txt"), emit: txt
-    tuple val(meta), path("${prefix}.log"), emit: log
-    tuple val(meta), path("logs/${prefix}_mmseqs.err"), emit: mmseqs_err
-    tuple val(meta), path("logs/${prefix}_mmseqs.out"), emit: mmseqs_out
+    tuple val(meta), path("*/${prefix}_reoriented.gfa.gz"), emit: gfa
+    tuple val(meta), path("*/${prefix}_all_reorientation_summary.tsv"), emit: tsv
+    tuple val(meta), path("*/${prefix}_MMseqs2_output.txt"), emit: txt, optional: true
+    tuple val(meta), path("*/${prefix}.log"), emit: log
+    tuple val(meta), path("*/${prefix}_mmseqs.err"), emit: mmseqs_err, optional: true
+    tuple val(meta), path("*/${prefix}_mmseqs.out"), emit: mmseqs_out, optional: true
     tuple val("${task.process}"), val('dnaapler'), eval('dnaapler --version'), emit: versions_dnaapler, topic: versions
 
     when:
@@ -30,20 +30,20 @@ process DNAAPLER {
     dnaapler \\
         all \\
         -i ${assembly} \\
-        -o . \\
+        -o ${prefix} \\
         ${args} \\
         -t ${task.cpus} \\
         -p ${prefix}
         
-    gzip -c ${prefix}_reoriented.gfa > ${prefix}_reoriented.gfa.gz
-    mv ${prefix}_*.log ${prefix}.log
-    mv logs/*.err logs/${prefix}_mmseqs.err
-    mv logs/*.out logs/${prefix}_mmseqs.out
+    gzip -c ${prefix}/${prefix}_reoriented.gfa > ${prefix}/${prefix}_reoriented.gfa.gz
+    mv ${prefix}/*.log ${prefix}/${prefix}.log
+    # mv ${prefix}/logs/*.err logs/${prefix}_mmseqs.err
+    # mv ${prefix}/logs/*.out logs/${prefix}_mmseqs.out
 
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     dnaapler: \$(samtools --version |& sed '1!d ; s/samtools //')
-    // END_VERSIONS
+    # cat <<-END_VERSIONS > versions.yml
+    # "${task.process}":
+    #     dnaapler: \$(samtools --version |& sed '1!d ; s/samtools //')
+    # END_VERSIONS
     """
 
     stub:
@@ -57,9 +57,9 @@ process DNAAPLER {
     echo stub > logs/${prefix}_mmseqs.err
     echo stub > logs/${prefix}_mmseqs.out
 
-    // cat <<-END_VERSIONS > versions.yml
-    // "${task.process}":
-    //     dnaapler: \$(samtools --version |& sed '1!d ; s/samtools //')
-    // END_VERSIONS
+    # cat <<-END_VERSIONS > versions.yml
+    # "${task.process}":
+    #     dnaapler: \$(samtools --version |& sed '1!d ; s/samtools //')
+    # END_VERSIONS
     """
 }

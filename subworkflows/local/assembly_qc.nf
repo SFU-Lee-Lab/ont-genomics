@@ -1,6 +1,6 @@
 // import modules
-include { checkm_single; aggregate_checkm } from '../modules/local/checkm.nf'
-include { quast; aggregate_quast; } from '../modules/local/quast.nf'
+include { checkm_single; aggregate_checkm } from '../../modules/local/checkm.nf'
+include { quast; aggregate_quast; } from '../../modules/local/quast.nf'
 
 workflow ASSEMBLY_QC {
     take: 
