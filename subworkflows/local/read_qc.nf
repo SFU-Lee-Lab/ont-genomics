@@ -9,21 +9,9 @@ workflow READ_QC {
     take: reads // [ [id:], path ]
 
     main:        
-
-        // adaptor and barcode trimming
-        if ( params.trim ) { 
-            
-            ch_trimmed_reads = porechop(reads)
-
-        } else {
-            
-            ch_trimmed_reads = reads
-
-        }
-
         // quality filtering on raw reads
         ch_NANOQ_output_fmt = Channel.of('fastq.gz').first()
-        NANOQ(ch_trimmed_reads, ch_NANOQ_output_fmt)
+        NANOQ(reads, ch_NANOQ_output_fmt)
         ch_filtered_reads = NANOQ.out.reads
 
     emit:

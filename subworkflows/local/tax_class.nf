@@ -15,7 +15,7 @@ workflow TAX_CLASS {
 
         CENTRIFUGER_CENTRIFUGER(
             reads, 
-            centrifuger_db,
+            centrifuger_db.first(),
             false, // save unclassified reads
             false, // save classified reads
             [], // barcode
