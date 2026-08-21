@@ -90,6 +90,11 @@
             "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
             "installed_by": ["modules"]
           },
+          "krona/ktupdatetaxonomy": {
+            "branch": "master",
+            "git_sha": "10d22ca9b72ecea28167f289df13a81ceb12d085",
+            "installed_by": ["modules"]
+          },
           "medaka": {
             "branch": "master",
             "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
