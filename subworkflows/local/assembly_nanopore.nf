@@ -121,8 +121,7 @@ workflow ASSEMBLY_NANOPORE {
         ch_medaka_input = ch_asm_reads.join(ANY2FASTA.out.fasta)
         MEDAKA(ch_medaka_input)        
         ch_polished_asm = MEDAKA.out.assembly
-                    
+
     emit: 
-        raw_asm = ch_first_asm // unpolished flye assembly
         polished_asm = ch_polished_asm
 }

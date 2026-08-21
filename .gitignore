@@ -1,2 +1,3 @@
 .vscode
-.nextflow
+.nextflow*
+test
