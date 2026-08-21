@@ -1,7 +1,7 @@
 // import modules
 include { FLYE; FLYE as FLYE_SUBSAMPLE } from '../../modules/nf-core/flye/main.nf'
 include { MEDAKA } from '../../modules/nf-core/medaka/main.nf'
-include { QUAST } from '../../modules/nf-core/quast/main.nf'
+include { QUAST; QUAST as QUAST_POLISH } from '../../modules/nf-core/quast/main.nf'
 include { RAVEN } from '../../modules/nf-core/raven/main.nf'
 include { AUTOCYCLER_SUBSAMPLE } from '../../modules/nf-core/autocycler/subsample/main.nf'
 include { MINIASM } from '../../modules/nf-core/miniasm/main.nf'
@@ -10,6 +10,7 @@ include { MINIPOLISH } from '../../modules/local/minipolish/main.nf'
 include { ANY2FASTA } from '../../modules/nf-core/any2fasta/main.nf'
 include { FASTA_CONSENSUS_AUTOCYCLER } from '../../subworkflows/nf-core/fasta_consensus_autocycler/main.nf'
 include { DNAAPLER } from '../../modules/local/dnaapler/main.nf'
+include { CHECKM_LINEAGEWF } from '../../modules/nf-core/checkm/lineagewf/main.nf'
 
 workflow ASSEMBLY_NANOPORE {
     take: reads
@@ -112,7 +113,7 @@ workflow ASSEMBLY_NANOPORE {
         FASTA_CONSENSUS_AUTOCYCLER(
             ch_autocycler_input
         )
-        FASTA_CONSENSUS_AUTOCYCLER.out.consensus_assembly_graph.view()
+        // FASTA_CONSENSUS_AUTOCYCLER.out.consensus_assembly_graph.view()
         // Run DNAapler to reorientate circular contigs
         DNAAPLER(FASTA_CONSENSUS_AUTOCYCLER.out.consensus_assembly_graph)
         ANY2FASTA(DNAAPLER.out.gfa)
@@ -120,6 +121,26 @@ workflow ASSEMBLY_NANOPORE {
         // run polishing
         MEDAKA(ch_asm_reads.join(ANY2FASTA.out.fasta))        
         ch_polished_asm = MEDAKA.out.assembly
+
+        // QUAST on polished assembly
+        QUAST_POLISH(
+            ch_polished_asm,
+            ch_asm_reads,
+            [ [], [] ]
+        )
+        
+        // checkm
+        // checkm_db = Channel.fromPath(
+        //     params.checkm_db, 
+        //     checkIfExists: true,
+        //     type: 'dir'
+        // )
+        CHECKM_LINEAGEWF(
+            ch_polished_asm,
+            ".fa.gz", // fasta extension
+            params.checkm_db // db path
+        )
+        CHECKM_LINEAGEWF.out.checkm_output.view()
                     
     emit: 
         raw_asm = ch_first_asm // unpolished flye assembly
