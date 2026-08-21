@@ -1,6 +1,7 @@
 // import modules
 include { krona; aggregate_krona_split; aggregate_kreport_split } from '../../modules/local/taxonomy_class.nf'
 include { CENTRIFUGER_CENTRIFUGER } from '../../modules/nf-core/centrifuger/centrifuger/main.nf'
+include { CENTRIFUGER_QUANTIFICATION     } from '../../modules/nf-core/centrifuger/quantification/main.nf'
 
 workflow TAX_CLASS {
     take: 
@@ -21,6 +22,16 @@ workflow TAX_CLASS {
             [], // barcode
             []  // umi
         )
+
+        CENTRIFUGER_QUANTIFICATION(
+            CENTRIFUGER_CENTRIFUGER.out.classification_file,
+            centrifuger_db.first(),
+            [],
+            [],
+            []
+        )
+
+
 
         // kreport = centrifuge.out.kreport.map{ it[1] }.collect() // collect all centrifuge reports into a list
 
