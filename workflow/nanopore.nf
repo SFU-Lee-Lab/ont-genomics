@@ -30,12 +30,6 @@ workflow NANOPORE {
 
         // assembly
         ASSEMBLY_NANOPORE(ch_clean_reads)
-
-        // post-assembly QC
-        ASSEMBLY_QC(
-            ASSEMBLY_NANOPORE.out.polished_asm,
-            ASSEMBLY_NANOPORE.out.reads
-        )
         
     emit:
         assembly = ASSEMBLY_NANOPORE.out.polished_asm
