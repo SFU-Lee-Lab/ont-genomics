@@ -11,6 +11,9 @@ include { ANY2FASTA } from '../../modules/nf-core/any2fasta/main.nf'
 include { FASTA_CONSENSUS_AUTOCYCLER } from '../../subworkflows/nf-core/fasta_consensus_autocycler/main.nf'
 include { DNAAPLER } from '../../modules/local/dnaapler/main.nf'
 include { CHECKM_LINEAGEWF } from '../../modules/nf-core/checkm/lineagewf/main.nf'
+include { GUNC_RUN } from '../../modules/nf-core/gunc/run/main.nf'
+include { SOURMASH_SKETCH } from '../../modules/nf-core/sourmash/sketch/main.nf'
+include { SOURMASH_GATHER } from '../../modules/nf-core/sourmash/gather/main.nf'
 
 workflow ASSEMBLY_NANOPORE {
     take: reads
@@ -122,27 +125,44 @@ workflow ASSEMBLY_NANOPORE {
         MEDAKA(ch_asm_reads.join(ANY2FASTA.out.fasta))        
         ch_polished_asm = MEDAKA.out.assembly
 
-        // QUAST on polished assembly
-        QUAST_POLISH(
-            ch_polished_asm,
-            ch_asm_reads,
-            [ [], [] ]
-        )
-        
-        // checkm
-        // checkm_db = Channel.fromPath(
-        //     params.checkm_db, 
-        //     checkIfExists: true,
-        //     type: 'dir'
+        // // QUAST on polished assembly
+        // QUAST_POLISH(
+        //     ch_polished_asm,
+        //     ch_asm_reads,
+        //     [ [], [] ]
         // )
-        CHECKM_LINEAGEWF(
-            ch_polished_asm,
-            ".fa.gz", // fasta extension
-            params.checkm_db // db path
-        )
-        CHECKM_LINEAGEWF.out.checkm_output.view()
-                    
+        
+        // // checkm
+        // CHECKM_LINEAGEWF(
+        //     ch_polished_asm,
+        //     ".fa.gz", // fasta extension
+        //     params.checkm_db // db path
+        // )
+        // // CHECKM_LINEAGEWF.out.checkm_output.view()
+
+        // // gunc
+        // // GUNC_RUN(
+        // //     ch_polished_asm,
+        // //     params.gunc_db
+        // // )
+        // // GUNC_RUN.out.maxcss_level_tsv.view()
+        
+        // // sourmash
+        // SOURMASH_SKETCH(
+        //     ch_polished_asm
+        // )
+        // SOURMASH_GATHER(
+        //     SOURMASH_SKETCH.out.signatures,
+        //     params.sourmash_db,
+        //     false,
+        //     false,
+        //     false,
+        //     false
+        // )
+        // SOURMASH_GATHER.out.result.view()
+
     emit: 
-        raw_asm = ch_first_asm // unpolished flye assembly
-        // polished_asm = ch_polished_asm
+        // raw_asm = ch_first_asm // unpolished flye assembly
+        polished_asm = ch_polished_asm
+        reads = ch_asm_reads
 }

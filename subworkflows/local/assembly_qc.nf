@@ -1,35 +1,52 @@
 // import modules
-include { checkm_single; aggregate_checkm } from '../../modules/local/checkm.nf'
-include { quast; aggregate_quast; } from '../../modules/local/quast.nf'
+include { QUAST } from '../../modules/nf-core/quast/main.nf'
+include { CHECKM_LINEAGEWF } from '../../modules/nf-core/checkm/lineagewf/main.nf'
+include { GUNC_RUN } from '../../modules/nf-core/gunc/run/main.nf'
+include { SOURMASH_SKETCH } from '../../modules/nf-core/sourmash/sketch/main.nf'
+include { SOURMASH_GATHER } from '../../modules/nf-core/sourmash/gather/main.nf'
+
 
 workflow ASSEMBLY_QC {
     take: 
         assembly
         reads
     main:
-        // CheckM
-        assembly 
-        | checkm_single
-        | map { it[1] }
-        | collect
-        | aggregate_checkm
-        | set { aggregate_checkm }
-
-
-        // QUAST
-        assembly
-        | join(reads)
-        | set { quast_input }
+        // QUAST on polished assembly
+        QUAST(
+            assembly,
+            reads,
+            [ [], [] ]
+        )
         
-        quast(quast_input)
+        // checkm
+        CHECKM_LINEAGEWF(
+            assembly,
+            ".fa.gz", // fasta extension
+            params.checkm_db // db path
+        )
+        // CHECKM_LINEAGEWF.out.checkm_output.view()
 
-        quast.out
-        | map { it[1] }
-        | collect
-        | aggregate_quast
-        | set { aggregate_quast }
+        // gunc
+        // GUNC_RUN(
+        //     assembly,
+        //     params.gunc_db
+        // )
+        // GUNC_RUN.out.maxcss_level_tsv.view()
+        
+        // sourmash
+        SOURMASH_SKETCH(
+            assembly
+        )
+        SOURMASH_GATHER(
+            SOURMASH_SKETCH.out.signatures,
+            params.sourmash_db,
+            false,
+            false,
+            false,
+            false
+        )
+        SOURMASH_GATHER.out.result.view()
 
     emit:
-        checkm_res = aggregate_checkm
-        quast_res = aggregate_quast
+        quast_res = QUAST.out.results
 }
