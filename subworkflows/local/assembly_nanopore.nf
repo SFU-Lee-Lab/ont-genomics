@@ -100,7 +100,7 @@ workflow ASSEMBLY_NANOPORE {
               
             )
             .map { meta, fasta ->
-                tuple([id:meta.id], fasta)
+                tuple([id:meta.id, single_end: true], fasta)
             }
             .filter {  meta, fasta -> 
                 fasta.countFasta() > 0
@@ -112,16 +112,17 @@ workflow ASSEMBLY_NANOPORE {
         FASTA_CONSENSUS_AUTOCYCLER(
             ch_autocycler_input
         )
-        FASTA_CONSENSUS_AUTOCYCLER.out.consensus_assembly_graph.view()
+
         // Run DNAapler to reorientate circular contigs
         DNAAPLER(FASTA_CONSENSUS_AUTOCYCLER.out.consensus_assembly_graph)
         ANY2FASTA(DNAAPLER.out.gfa)
 
         // run polishing
-        MEDAKA(ch_asm_reads.join(ANY2FASTA.out.fasta))        
+        ch_medaka_input = ch_asm_reads.join(ANY2FASTA.out.fasta)
+        MEDAKA(ch_medaka_input)        
         ch_polished_asm = MEDAKA.out.assembly
                     
     emit: 
         raw_asm = ch_first_asm // unpolished flye assembly
-        // polished_asm = ch_polished_asm
+        polished_asm = ch_polished_asm
 }

@@ -25,12 +25,12 @@ workflow NANOPORE {
         }
 
         // taxonomic classification
-        // TAX_CLASS(ch_clean_reads)
+        TAX_CLASS(ch_clean_reads)
 
         // assembly
         ASSEMBLY_NANOPORE(ch_clean_reads)
         
     emit:
-        //assembly = ASSEMBLY_NANOPORE.out.polished_asm
+        assembly = ASSEMBLY_NANOPORE.out.polished_asm
         reads = ch_clean_reads
 }
