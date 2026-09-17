@@ -14,7 +14,7 @@ process AUTOCYCLER_COMPRESS {
     output:
     tuple val(meta), path("compress/${prefix}/*.gfa"),  emit: gfa
     tuple val(meta), path("compress/${prefix}/*.yaml"), emit: stats
-    tuple val("${task.process}"), val("autocycler"), eval("autocycler --version |  sed 's/^[^ ]* //'"), emit: versions_autocycler
+    tuple val("${task.process}"), val("autocycler"), emit: versions_autocycler
 
     when:
     task.ext.when == null || task.ext.when

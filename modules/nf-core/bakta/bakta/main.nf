@@ -27,7 +27,7 @@ process BAKTA_BAKTA {
     tuple val(meta), path("${prefix}.tsv"), emit: tsv
     tuple val(meta), path("${prefix}.txt"), emit: txt
     tuple val(meta), path("${prefix}.json"), emit: json
-    tuple val("${task.process}"), val('bakta'), eval("bakta --version 2>&1 | sed 's/.*bakta //'"), emit: versions_bakta
+    tuple val("${task.process}"), val('bakta'), emit: versions_bakta
 
     when:
     task.ext.when == null || task.ext.when

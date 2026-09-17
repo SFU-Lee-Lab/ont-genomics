@@ -14,7 +14,7 @@ process MINIPOLISH {
 
     output:
     tuple val(meta), path("*.gfa.gz"), emit: assembly
-    tuple val("${task.process}"), val('minipolish'), eval('minipolish --version'), emit: versions_minipolish, topic: versions
+    tuple val("${task.process}"), val('minipolish'), emit: versions_minipolish
 
     when:
     task.ext.when == null || task.ext.when

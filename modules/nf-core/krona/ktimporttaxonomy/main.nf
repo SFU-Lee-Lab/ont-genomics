@@ -14,7 +14,7 @@ process KRONA_KTIMPORTTAXONOMY {
 
     output:
     tuple val(meta), path('*.html'), emit: html
-    tuple val("${task.process}"), val('krona'), eval("ktImportTaxonomy | grep -Po '(?<=KronaTools )[0-9.]+'"), emit: versions_krona
+    tuple val("${task.process}"), val('krona'), emit: versions_krona
 
     when:
     task.ext.when == null || task.ext.when

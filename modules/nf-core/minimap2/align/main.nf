@@ -20,7 +20,7 @@ process MINIMAP2_ALIGN {
     tuple val(meta), path("*.paf")                       , optional: true, emit: paf
     tuple val(meta), path("*.bam")                       , optional: true, emit: bam
     tuple val(meta), path("*.bam.${bam_index_extension}"), optional: true, emit: index
-    tuple val("${task.process}"), val("minimap2"), eval("minimap2 --version"), emit: versions_minimap2
+    tuple val("${task.process}"), val("minimap2"), emit: versions_minimap2
 
     when:
     task.ext.when == null || task.ext.when

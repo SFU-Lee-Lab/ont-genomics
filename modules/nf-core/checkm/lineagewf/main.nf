@@ -16,7 +16,7 @@ process CHECKM_LINEAGEWF {
     tuple val(meta), path("${prefix}"), emit: checkm_output
     tuple val(meta), path("${prefix}/lineage.ms"), emit: marker_file
     tuple val(meta), path("${prefix}.tsv"), emit: checkm_tsv
-    tuple val("${task.process}"), val('checkm'), eval("checkm 2>&1 | grep '...:::' | sed 's/.*CheckM v//;s/ .*//'"), emit: versions_checkm
+    tuple val("${task.process}"), val('checkm'), emit: versions_checkm
 
     when:
     task.ext.when == null || task.ext.when

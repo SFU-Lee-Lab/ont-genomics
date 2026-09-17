@@ -18,7 +18,7 @@ process DNAAPLER {
     tuple val(meta), path("*/${prefix}.log"), emit: log
     tuple val(meta), path("*/${prefix}_mmseqs.err"), emit: mmseqs_err, optional: true
     tuple val(meta), path("*/${prefix}_mmseqs.out"), emit: mmseqs_out, optional: true
-    tuple val("${task.process}"), val('dnaapler'), eval('dnaapler --version'), emit: versions_dnaapler, topic: versions
+    tuple val("${task.process}"), val('dnaapler'), emit: versions_dnaapler
 
     when:
     task.ext.when == null || task.ext.when
