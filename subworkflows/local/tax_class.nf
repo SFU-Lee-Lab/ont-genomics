@@ -2,6 +2,10 @@
 include { krona; aggregate_krona_split; aggregate_kreport_split } from '../../modules/local/taxonomy_class.nf'
 include { CENTRIFUGER_CENTRIFUGER } from '../../modules/nf-core/centrifuger/centrifuger/main.nf'
 include { CENTRIFUGER_QUANTIFICATION     } from '../../modules/nf-core/centrifuger/quantification/main.nf'
+include { KRAKENTOOLS_KREPORT2KRONA } from '../../modules/nf-core/krakentools/kreport2krona/main.nf'
+include { KRONA_KTIMPORTTAXONOMY } from '../../modules/nf-core/krona/ktimporttaxonomy/main.nf'
+include { KRONA_KTUPDATETAXONOMY } from '../../modules/nf-core/krona/ktupdatetaxonomy/main.nf'
+include { KRONA_KTIMPORTKRONA } from '../../modules/nf-core/krona/ktimportkrona/main.nf'
 
 workflow TAX_CLASS {
     take: 
@@ -31,16 +35,38 @@ workflow TAX_CLASS {
             []
         )
 
+        ch_species = CENTRIFUGER_QUANTIFICATION.out.report_file
+            .map { meta, report ->
+                species = report.readLines()
+                        .findAll { it.split('\t')[3] == 'S' }
+                        .max { it.split('\t')[2].toDouble() }
+                        .split('\t')[5]
+                        .trim()
+                        .replace('_', ' ')
+                if ( species == 'Clostridioides difficile' ) {
+                    species = 'Clostridium difficile'
+                }
+                return tuple(meta, species)
+            }
+        ch_species.view()
+        // convert kraken report to krona format
+        KRAKENTOOLS_KREPORT2KRONA(CENTRIFUGER_QUANTIFICATION.out.report_file)
 
+        // build krona interactive reports
+        if ( !params.krona_taxdb ) {
+            KRONA_KTUPDATETAXONOMY()
+            ch_taxdb = KRONA_KTUPDATETAXONOMY.out.db
+        } else {
+            ch_taxdb = Channel.fromPath(
+                params.krona_taxdb, 
+                checkIfExists: true,
+                type: 'dir'
+            )
+        }
 
-        // kreport = centrifuge.out.kreport.map{ it[1] }.collect() // collect all centrifuge reports into a list
-
-        // // create Krona report
-        // centrifuge.out.krona 
-        // | collect
-        // | map { it[1] }
-        // | krona
+        KRONA_KTIMPORTTAXONOMY(KRAKENTOOLS_KREPORT2KRONA.out.txt, ch_taxdb.first())
+        KRONA_KTIMPORTKRONA(KRONA_KTIMPORTTAXONOMY.out.html.map { it[1] }.collect())
         
-    // emit:
-        // kreport = kreport
+    emit:
+        species_id = ch_species
 }
