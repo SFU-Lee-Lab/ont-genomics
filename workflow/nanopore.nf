@@ -34,4 +34,5 @@ workflow NANOPORE {
     emit:
         assembly = ASSEMBLY_NANOPORE.out.polished_asm
         reads = ch_clean_reads
+        species_id = TAX_CLASS.out.species_id
 }
