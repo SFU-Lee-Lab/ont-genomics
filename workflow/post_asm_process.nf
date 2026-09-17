@@ -11,6 +11,7 @@ workflow POST_ASM_PROCESS {
 
     take: assembly // Path: assembly path
           reads    // Path: filtered raw read path
+          species_id // [ meta, species_id]
 
     main:
 
@@ -18,7 +19,7 @@ workflow POST_ASM_PROCESS {
         if ( params.qc ) { 
                 
             // post-assembly QC
-            ASSEMBLY_QC(assembly, reads)
+            ASSEMBLY_QC(assembly, reads, species_id)
             
             // COVERAGE analysis
             ASSEMBLY_COV(reads, assembly)
