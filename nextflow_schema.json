@@ -152,7 +152,7 @@
                 },
                 "schema_ignore_params": {
                     "type": "string",
-                    "default": "client_fields",
+                    "default": "client_fields,min_nr_asm,min_asm_cov,centrifuger_db,checkm_db,gunc_db,sourmash_db,bakta_db,krona_taxdb",
                     "hidden": true,
                     "description": "Selectively ignore specific options from the command line. Multiple values can be supplied using the comma delimiter."
                 },
