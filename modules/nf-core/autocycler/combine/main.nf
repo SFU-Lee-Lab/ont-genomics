@@ -14,7 +14,7 @@ process AUTOCYCLER_COMBINE {
     tuple val(meta), path("combine/${prefix}/consensus_assembly.fasta"), emit: fasta
     tuple val(meta), path("combine/${prefix}/consensus_assembly.gfa"),   emit: gfa
     tuple val(meta), path("combine/${prefix}/consensus_assembly.yaml"),  emit: stats
-    tuple val("${task.process}"), val("autocycler"), eval("autocycler --version |  sed 's/^[^ ]* //'"), emit: versions_autocycler, topic: versions
+    tuple val("${task.process}"), val("autocycler"), eval("autocycler --version |  sed 's/^[^ ]* //'"), emit: versions_autocycler
 
     when:
     task.ext.when == null || task.ext.when

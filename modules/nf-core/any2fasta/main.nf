@@ -12,7 +12,7 @@ process ANY2FASTA {
 
     output:
     tuple val(meta), path("*.fasta"), emit: fasta
-    tuple val("${task.process}"), val('any2fasta'), eval("any2fasta -v 2>&1 | head -1 | sed 's/any2fasta //'"), topic: versions, emit: versions_any2fasta
+    tuple val("${task.process}"), val('any2fasta'), eval("any2fasta -v 2>&1 | head -1 | sed 's/any2fasta //'"), emit: versions_any2fasta
 
     when:
     task.ext.when == null || task.ext.when

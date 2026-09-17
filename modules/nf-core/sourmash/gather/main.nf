@@ -21,7 +21,7 @@ process SOURMASH_GATHER {
     tuple val(meta), path('*_matches.sig.zip'), optional: true, emit: matches
     tuple val(meta), path('*_prefetch.sig.zip'), optional: true, emit: prefetch
     tuple val(meta), path('*_prefetch.csv.gz'), optional: true, emit: prefetchcsv
-    tuple val("${task.process}"), val('sourmash'), eval("sourmash --version 2>&1 | sed 's/^sourmash //'"), emit: versions_sourmash, topic: versions
+    tuple val("${task.process}"), val('sourmash'), eval("sourmash --version 2>&1 | sed 's/^sourmash //'"), emit: versions_sourmash
 
     when:
     task.ext.when == null || task.ext.when

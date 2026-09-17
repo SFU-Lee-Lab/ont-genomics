@@ -14,7 +14,7 @@ process NANOQ {
     output:
     tuple val(meta), path("*.{stats,json}")            , emit: stats
     tuple val(meta), path("${prefix}.${output_format}"), emit: reads
-    tuple val("${task.process}"), val('nanoq'), eval("nanoq --version | sed -e 's/nanoq //g'"), topic: versions, emit: versions_nanoq
+    tuple val("${task.process}"), val('nanoq'), eval("nanoq --version | sed -e 's/nanoq //g'"), emit: versions_nanoq
 
     when:
     task.ext.when == null || task.ext.when
