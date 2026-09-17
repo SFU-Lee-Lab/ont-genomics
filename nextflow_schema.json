@@ -172,22 +172,10 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/sequencing_info"
-        },
-        {
             "$ref": "#/definitions/data_quality_check"
         },
         {
             "$ref": "#/definitions/genome_annotation"
-        },
-        {
-            "$ref": "#/definitions/metagenomics_options"
-        },
-        {
-            "$ref": "#/definitions/gpu_acceleration"
-        },
-        {
-            "$ref": "#/definitions/real_time_options"
         },
         {
             "$ref": "#/definitions/slurm_hpc"
