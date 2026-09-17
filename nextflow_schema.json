@@ -55,11 +55,6 @@
                     "description": "Path to DIAMOND file containing GUNC database (required if using --qc)",
                     "format": "file-path"
                 },
-                "gunc_db": {
-                    "type": "string",
-                    "description": "Path to DIAMOND file containing GUNC database (required if using --qc)",
-                    "format": "file-path"
-                },
                 "min_rq": {
                     "type": "integer",
                     "default": 10,
