@@ -1,170 +1,74 @@
-[![Circleci](https://circleci.com/gh/jimmyliu1326/SamnSero_Nextflow.svg?style=svg)](https://app.circleci.com/pipelines/github/jimmyliu1326/SamnSero_Nextflow)
 
-# SamnSero: Bacterial Genomics for Nanopore Sequencing
+# ONT-GENOMICS: Bacterial genome assembly workflow for ONT data
 
-`SamnSero` was developed to streamline the analysis of Nanopore sequencing data from bacterial isolates and metagenomic samples. The workflow serves three primary purposes:
-- [Long read (meta-)genome assembly](https://github.com/jimmyliu1326/SamnSero_Nextflow?tab=readme-ov-file#meta-genome-assembly)
-- [Data quality assessment and control](https://github.com/jimmyliu1326/SamnSero_Nextflow?tab=readme-ov-file#data-quality-assessment-and-control)
-- Post-assembly analysis e.g. Typing and annotation
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.3-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.3)
+[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
+[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
 
-Originally designed as a post-run analysis tool, it has since evolved to leverage the live basecalling feature of Oxford Nanopore Technologies (ONT) to deliver real-time data processing. Motivated by the need to reduce time to genomics results and bring greater transparency to sequencing experiments, users can now execute the pipeline in parallel with their sequencing experiments to monitor read quality, genome assembly quality, taxonomic abundance and typing results as a function of time (Note: for typing, only *Salmonella* *in silico* serotyping is supported at the moment!).
+<!-- TODO nf-core:
+   Complete this sentence with a 2-3 sentence summary of what types of data the pipeline ingests, a brief overview of the
+   major pipeline sections and the types of output it produces. You're giving an overview to someone new
+   to nf-core here, in 15-20 seconds. For an example, see https://github.com/nf-core/rnaseq/blob/master/README.md#introduction
+-->
 
-![workflow](https://github.com/jimmyliu1326/SamnSero_Nextflow/blob/main/assets/SamnSero_workflow.png?raw=true)
+<!-- TODO nf-core: Include a figure that guides the user through the major workflow steps. Many nf-core
+     workflows use the "tube map" design for that. See https://nf-co.re/docs/community/brand/workflow-schematics#examples for examples.   -->
+<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
 
-## Installation
+## Usage
 
-The pipeline can either be run directly from the command line or EPI2ME.
+<!-- TODO nf-core: Describe the minimum required steps to execute the pipeline, e.g. how to prepare samplesheets.
+     Explain what rows and columns represent. For instance (please edit as appropriate):
 
-#### Command line interface
+First, prepare a samplesheet with your input data that looks as follows:
 
-For command line execution, use the workflow management feature of `Nextflow` to install `SamnSero`
-```bash
-# Install pre-requisites
- - Nextflow >= 23.0
- - Docker or Singularity
- - Git
+`samplesheet.csv`:
 
-# Get the latest release tag of the pipeline
-ver=$(git ls-remote -t https://github.com/jimmyliu1326/SamnSero_Nextflow.git | cut -f3 -d'/' | sort -r | head -n 1)
-
-# Install the latest version of SamnSero
-nextflow pull -hub github jimmyliu1326/SamnSero_Nextflow -r $ver
-
-# Print pipeline help to validate installation
-nextflow run jimmyliu1326/SamnSero_Nextflow -r $ver --help
+```csv
+sample,fastq_1,fastq_2
+CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 ```
 
-#### Graphical interface (EPI2ME)
+Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
-For more user-friendly graphical interfaces, we recommend installing the pipeline in [EPI2ME](https://labs.epi2me.io/quickstart/). After clicking on `Import Workflow` in the application, enter the full URL to this GitHub repository when prompted:
+-->
 
-> https://github.com/jimmyliu1326/SamnSero_Nextflow
+Now, you can run the pipeline using:
 
-![epi2me-install](https://github.com/jimmyliu1326/SamnSero_Nextflow/blob/main/assets/epi2me_install.png?raw=true)
-
-## Getting started with post-run analysis
-
-Required Parameters:
-
-- `--input`: comma-delimited sample sheet 
-- `-profile`: `docker`/`singularity`/`slurm` or a combination of multiple profiles delimiting the values by comma
-
-To initiate a `SamnSero` run, you must first prepare a **headerless** `samples.csv` with two columns that indicate sample IDs and paths to **DIRECTORIES** containing .FASTQ or .FASTQ.GZ files
-
-Example `samples.csv`
-
-```
-Sample_1,/path/to/data/Sample_1/
-Sample_2,/path/to/data/Sample_2/
-Sample_3,/path/to/data/Sample_3/
-```
-
-Given the `samples.csv` above, your data directory should be set up like the following:
-
-```
-/path/to/data/
-├── Sample_1
-│   └── Sample_1.fastq.gz
-├── Sample_2
-│   └── Sample_2.fastq.gz
-└── Sample_3
-    ├── Sample_3a.fastq
-    └── Sample_3b.fastq
-```
-
-*Note:*
-* The sequencing data for each sample must be placed within a unique subdirectory
-* The names of the sample subdirectories do not have to match the sample ID listed in the `samples.csv`
-* You can have multiple .FASTQ files associated with a single sample. The pipeline will aggregate all .FASTQ files within the same directory before proceeding (for Nanopore data only)
-
-Once you have set up the data directory as described and created the `samples.csv`, you are ready to run the pipeline!
-
-## Getting started with real-time analysis
-
-Required Parameters:
-
-- `--watchdir`: directory to where FASTQ files are deposited in real-time
-- `-profile`: `docker`/`singularity`/`slurm` or a combination of multiple profiles delimiting the values by comma
-
-The pipeline assumes `watchdir` follows the nested output directory structure of ONT basecallers: `[run_id]/**/[qscore_pass_fail]/[barcode_arrangement]/`
-
-The FASTQ data can be deeply nested in as many directories as possible under the `[run_id]` parent directory. The pipeline by default performs a recursive search for FASTQ data in `watchdir`. FASTQ data can be uncompressed or gzip compressed.
-
-An example `watchdir` directory structure should resemble the following:
-
-```
-/path/to/watchdir/
-├── ANY_NUMBER_OF_SUBDIRECTORIES/
-│   ├── pod5/
-│   ├── fastq_fail/
-└── └── fastq_pass/
-        ├── barcode01/
-        │   ├── batch01.fastq.gz
-        │   └── batch02.fastq.gz
-        ├── barcode02/
-        │   └── batch03.fastq.gz
-        └── barcode03/
-            └── batch04.fastq.gz
-```
-
-The pipeline by default monitors for the creation or modification of FASTQ data passing quality filter i.e. written to the `pass` or `fastq_pass` folder. The file monitoring behavior of the pipeline can be amended using `--watch_mode` which supports three file event types: `create`, `modify`, `delete`. The default value for `watch_mode` is `create,modify`.
-
-For real-time analysis, the pipeline internally attempts to optimize the resource allocation by limiting the resource consumption of compute-heavy processes. The optimization helps to guarantee access to real-time feedback in the form of technical reports by ensuring that there are always resources to spare for data summary and results reporting. The resource optimization is dependent on the value of `watch_cpus` which specifies the maximum available CPU cores available for analysis. The recommended `watch_cpus` for real-time analysis is 64 or greater.
-
-## Pipeline Usage
-
-The pipeline executes processes in Docker containers by default. Singularity containers and process management by Slurm are also supported. See below how to run the pipeline using different containerization technologies.
-
-**Docker (Default)**
-
- Without specifying a profile, Docker containers are used by default.
+<!-- TODO nf-core: update the following command to include all required parameters for a minimal example -->
 
 ```bash
-nextflow run jimmyliu1326/SamnSero_Nextflow -r [vers] --input samples.csv --out_dir results
+nextflow run SFU-Lee-Lab/ont-genomics \
+   -profile <docker/singularity/.../institute> \
+   --input samplesheet.csv \
+   --out_dir <out_dir>
 ```
 
-**Singularity** 
+> [!WARNING]
+> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).
 
-Add `-profile singularity` to use Singularity containers.
+## Credits
 
-```bash
-nextflow run jimmyliu1326/SamnSero_Nextflow -r [vers] --input samples.csv --out_dir results -profile singularity
-```
+SFU-Lee-Lab/NOVA was originally written by Jimmy Liu, Jonathan Ho, & Travis Blimkie.
 
-**Slurm + Singularity**
+## Contributions and Support
 
-For environments with Slurm support, append `-profile singularity` and specify your Slurm account using the `--account` parameter.
+If you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).
 
-```bash
-nextflow run jimmyliu1326/SamnSero_Nextflow -r [vers] --input samples.csv --out_dir results --account my-slurm-account -profile slurm,singularity 
-```
+## Citations
 
-## (Meta-)Genome assembly
+<!-- TODO nf-core: Add citation for pipeline after first release. Uncomment lines below and update Zenodo doi and badge at the top of this file. -->
+<!-- If you use SFU-Lee-Lab/nova for your analysis, please cite it using the following doi: [10.5281/zenodo.XXXXXX](https://doi.org/10.5281/zenodo.XXXXXX) -->
 
-Both ONT long-read and Illumina paired-end short read genome assemblies are supported which can be toggled using `--seq_platform nanopore/illumina`. 
+<!-- TODO nf-core: Add bibliography of tools and data used in your pipeline -->
 
-For metagenomic data, use `--meta on` to generate metagenome assembled genomes (MAGs). Post-assembly contig binning is currently under active development. We are actively working towards resolving strain-level haplotypes and reconstructing genomes of individual strains which would enable the decomposition of mixed populations of the same species.
+An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
 
-There are currently no plans to support hybrid genome assembly.
+This pipeline uses code and infrastructure developed and maintained by the [nf-core](https://nf-co.re) community, reused here under the [MIT license](https://github.com/nf-core/tools/blob/main/LICENSE).
 
-## Data quality assessment and control
-
-Sequencing data quality assessment and control can be invoked by the `--qc` option.
-
-The sequencing data QA/QC involves the following modules:
-
-- nanoq: Read quality/length filtering
-- centrifuge: Taxonomic classification
-- krona: Visualization of microbial composition
-- QUAST: Genome assembly statistics summary
-- CheckM: Single copy marker gene analysis
-- nanocomp: Raw read summary statistics report
-
-To use the `--qc` option, a pre-downloaded Centrifuge database is required, which can be downloaded from [here](https://genome-idx.s3.amazonaws.com/centrifuge/p_compressed%2Bh%2Bv.tar.gz). 
-
-After downloading the tar file, it needs to be decompressed into a directory, the path of which needs to be supplied via the `--centrifuge` option along with `--qc`.
-
-# Citations
-If you use `SamnSero` for your analysis, please cite the following:
-> Karunarathna R, Liu CC, Periyasamy D, Berg A, Ngeleka M, Trokhymchuk A. Towards decentralization of Salmonella serotyping and risk assessment in poultry production environments with nanopore sequencing. Front Microbiol. 2025 Oct 15;16(1669089):1669089.
-   
+> **The nf-core framework for community-curated bioinformatics pipelines.**
+>
+> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
+>
+> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).

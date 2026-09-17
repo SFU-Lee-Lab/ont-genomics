@@ -29,6 +29,7 @@ process GUNC_RUN {
         --db_file ${db} \\
         --threads ${task.cpus} \\
         ${args}
+    mv gunc_output/*all_levels.tsv .
     """
 
     stub:

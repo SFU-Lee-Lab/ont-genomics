@@ -8,7 +8,7 @@ process QUAST {
         'community.wave.seqera.io/library/quast:5.3.0--755a216045b6dbdd' }"
 
     input:
-    tuple val(meta) , path(consensus)
+    tuple val(meta) , path(consensus), path(reads)
     tuple val(meta2), path(fasta)
     tuple val(meta3), path(gff)
 
@@ -27,10 +27,11 @@ process QUAST {
     def args      = task.ext.args   ?: ''
     prefix        = task.ext.prefix ?: "${meta.id}"
     def features  = gff             ?  "--features $gff" : ''
-    def reference = fasta           ?  "--nanopore $fasta"       : ''
+    def reference = fasta           ?  "-r $fasta"       : ''
     """
     quast.py \\
         --output-dir $prefix \\
+        --nanopore $reads \\
         $reference \\
         $features \\
         --threads $task.cpus \\
