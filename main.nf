@@ -77,7 +77,8 @@ workflow {
     NANOPORE(data.reads)
     POST_ASM_PROCESS(
         NANOPORE.out.assembly, 
-        NANOPORE.out.reads
+        NANOPORE.out.reads,
+        NANOPORE.out.species_id
     )
     // process genome assembly directly
     // post_asm_process_asm(rename_FASTA.out, data.asm.map { id,path -> [id, [] ] }, taxid, true)
