@@ -98,8 +98,9 @@
                     "description": "Annotate genome assemblies"
                 },
                 "bakta_db": {
-                    "type": "directory-path",
-                    "description": "Path to DIRECTORY containing Bakta database (required if using --annot)"
+                    "type": "string",
+                    "description": "Path to DIRECTORY containing Bakta database (required if using --annot)",
+                    "format": "directory-path"
                 }
             },
             "fa_icon": "fas fa-search"
