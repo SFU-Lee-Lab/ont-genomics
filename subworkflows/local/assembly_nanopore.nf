@@ -7,7 +7,7 @@ include { AUTOCYCLER_SUBSAMPLE } from '../../modules/nf-core/autocycler/subsampl
 include { MINIASM } from '../../modules/nf-core/miniasm/main.nf'
 include { MINIMAP2_ALIGN as MINIMAP2_ALIGN_PAF } from '../../modules/nf-core/minimap2/align/main.nf'
 include { MINIPOLISH } from '../../modules/local/minipolish/main.nf'
-include { ANY2FASTA } from '../../modules/nf-core/any2fasta/main.nf'
+include { ANY2FASTA; ANY2FASTA as ANY2FASTA_MINIPOLISH } from '../../modules/nf-core/any2fasta/main.nf'
 include { FASTA_CONSENSUS_AUTOCYCLER } from '../../subworkflows/nf-core/fasta_consensus_autocycler/main.nf'
 include { DNAAPLER } from '../../modules/local/dnaapler/main.nf'
 
@@ -24,9 +24,10 @@ workflow ASSEMBLY_NANOPORE {
         ch_first_asm = FLYE.out.fasta
 
         // calculate coverage using QUAST
+        ch_quast_input = ch_first_asm.join(ch_asm_reads)
         QUAST(
-            ch_first_asm, 
-            ch_asm_reads, 
+            ch_quast_input,
+            [ [], [] ],
             [ [], [] ]
         )
 
@@ -91,13 +92,13 @@ workflow ASSEMBLY_NANOPORE {
         
         // Polish miniasm assembly with minipolish
         ch_minipolish_input = ch_subsampled_reads.join(MINIASM.out.gfa, by:0)
-        MINIPOLISH(ch_minipolish_input)
-        // ANY2FASTA(MINIPOLISH.out.assembly)
+        // MINIPOLISH(ch_minipolish_input)
+        //ANY2FASTA_MINIPOLISH(MINIPOLISH.out.assembly)
 
         ch_autocycler_input = FLYE_SUBSAMPLE.out.fasta
             .concat(
-                RAVEN.out.fasta,
-              
+                RAVEN.out.fasta//,
+                //ANY2FASTA_MINIPOLISH.out.fasta
             )
             .map { meta, fasta ->
                 tuple([id:meta.id, single_end: true], fasta)
