@@ -123,12 +123,12 @@
             "properties": {
                 "max_memory": {
                     "type": "string",
-                    "default": "128.GB",
+                    "default": "64.GB",
                     "description": "Maximum memory"
                 },
                 "max_cpus": {
                     "type": "integer",
-                    "default": 64,
+                    "default": 32,
                     "description": "Maximum number of CPUs"
                 },
                 "max_time": {
