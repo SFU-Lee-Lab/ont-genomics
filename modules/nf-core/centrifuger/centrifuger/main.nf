@@ -19,7 +19,7 @@ process CENTRIFUGER_CENTRIFUGER {
     tuple val(meta), path("*.tsv")                , emit: classification_file
     tuple val(meta), path("*.classified*.fq.gz")  , emit: fastq_classified  , optional: true
     tuple val(meta), path("*.unclassified*.fq.gz"), emit: fastq_unclassified, optional: true
-    tuple val("${task.process}"), val('centrifuger'), eval("centrifuger -v 2>&1 | sed 's/Centrifuger v//'"),emit: versions_centrifuger,  topic: versions
+    tuple val("${task.process}"), val('centrifuger'),emit: versions_centrifuger
 
     when:
     task.ext.when == null || task.ext.when

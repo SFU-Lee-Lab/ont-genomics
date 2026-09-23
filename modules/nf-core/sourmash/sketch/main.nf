@@ -12,7 +12,7 @@ process SOURMASH_SKETCH {
 
     output:
     tuple val(meta), path("*.sig"), emit: signatures
-    tuple val("${task.process}"), val('sourmash'), eval("sourmash --version 2>&1 | sed 's/^sourmash //'"), emit: versions_sourmash, topic: versions
+    tuple val("${task.process}"), val('sourmash'), emit: versions_sourmash
 
     when:
     task.ext.when == null || task.ext.when

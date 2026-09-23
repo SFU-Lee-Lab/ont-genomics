@@ -34,7 +34,7 @@ workflow TAX_CLASS {
             [],
             []
         )
-
+        // parse the most abundance species assignment from centrifuger report
         ch_species = CENTRIFUGER_QUANTIFICATION.out.report_file
             .map { meta, report ->
                 species = report.readLines()
@@ -48,7 +48,10 @@ workflow TAX_CLASS {
                 }
                 return tuple(meta, species)
             }
-        ch_species.view()
+        // print species assignment to screen
+        ch_species.subscribe { meta, species ->
+            println "Sample \u001B[93m${meta.id}\u001B[0m was assigned to: \u001B[92m${species}\u001B[0m"
+        }
         // convert kraken report to krona format
         KRAKENTOOLS_KREPORT2KRONA(CENTRIFUGER_QUANTIFICATION.out.report_file)
 

@@ -13,7 +13,7 @@ process AUTOCYCLER_SUBSAMPLE {
     
     output:
     tuple val(meta), path("$prefix/*.fastq.gz"), emit: subsampled_reads
-    tuple val("${task.process}"), val("autocycler"), eval("autocycler --version |  sed 's/^[^ ]* //'"), emit: versions_autocycler, topic: versions
+    tuple val("${task.process}"), val("autocycler"), emit: versions_autocycler
 
     when:
     task.ext.when == null || task.ext.when

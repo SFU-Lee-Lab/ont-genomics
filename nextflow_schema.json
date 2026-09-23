@@ -10,6 +10,7 @@
             "type": "object",
             "fa_icon": "fas fa-terminal",
             "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input"],
             "properties": {
                 "input": {
                     "type": "string",
@@ -48,11 +49,6 @@
                 "sourmash_db": {
                     "type": "string",
                     "description": "Path to ZIP file containing Sourmash database (required if using --qc)",
-                    "format": "file-path"
-                },
-                "gunc_db": {
-                    "type": "string",
-                    "description": "Path to DIAMOND file containing GUNC database (required if using --qc)",
                     "format": "file-path"
                 },
                 "gunc_db": {
@@ -127,12 +123,12 @@
             "properties": {
                 "max_memory": {
                     "type": "string",
-                    "default": "128.GB",
+                    "default": "64.GB",
                     "description": "Maximum memory"
                 },
                 "max_cpus": {
                     "type": "integer",
-                    "default": 64,
+                    "default": 32,
                     "description": "Maximum number of CPUs"
                 },
                 "max_time": {
@@ -157,7 +153,7 @@
                 },
                 "schema_ignore_params": {
                     "type": "string",
-                    "default": "client_fields",
+                    "default": "client_fields,min_nr_asm,min_asm_cov,centrifuger_db,checkm_db,gunc_db,sourmash_db,bakta_db,krona_taxdb",
                     "hidden": true,
                     "description": "Selectively ignore specific options from the command line. Multiple values can be supplied using the comma delimiter."
                 },
@@ -177,22 +173,10 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/sequencing_info"
-        },
-        {
             "$ref": "#/definitions/data_quality_check"
         },
         {
             "$ref": "#/definitions/genome_annotation"
-        },
-        {
-            "$ref": "#/definitions/metagenomics_options"
-        },
-        {
-            "$ref": "#/definitions/gpu_acceleration"
-        },
-        {
-            "$ref": "#/definitions/real_time_options"
         },
         {
             "$ref": "#/definitions/slurm_hpc"

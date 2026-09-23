@@ -13,7 +13,7 @@ process RAVEN {
     output:
     tuple val(meta), path("*.fasta.gz"), emit: fasta
     tuple val(meta), path("*.gfa.gz")  , emit: gfa
-    tuple val("${task.process}"), val('raven'), eval('raven --version'), emit: versions_raven, topic: versions
+    tuple val("${task.process}"), val('raven'), emit: versions_raven
 
     when:
     task.ext.when == null || task.ext.when

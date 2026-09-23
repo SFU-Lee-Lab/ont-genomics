@@ -54,7 +54,4 @@ workflow ASSEMBLY_QC {
             false,
             false
         )
-
-    emit:
-        quast_res = QUAST.out.results
 }

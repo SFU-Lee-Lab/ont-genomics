@@ -14,7 +14,7 @@ process KRAKENTOOLS_KREPORT2KRONA {
     output:
     tuple val(meta), path("*.txt"), emit: txt
     // WARN: Version information not provided by tool on CLI. Please update this string when bumping container versions.
-    tuple val("${task.process}"), val('krakentools'), val('1.2.1'), topic: versions, emit: versions_krakentools
+    tuple val("${task.process}"), val('krakentools'), val('1.2.1'), emit: versions_krakentools
 
     when:
     task.ext.when == null || task.ext.when
