@@ -27,15 +27,15 @@ workflow ASSEMBLY_QC {
         )
 
         // gunc
-        // ch_gunc_db = Channel.fromPath(
-        //     params.gunc_db, 
-        //     checkIfExists: true,
-        //     type: 'dir'
-        // )
-        // GUNC_RUN(
-        //     assembly,
-        //     ch_gunc_db.first() // db path
-        // )
+        ch_gunc_db = Channel.fromPath(
+            params.gunc_db, 
+            checkIfExists: true,
+            type: 'dir'
+        )
+        GUNC_RUN(
+            assembly,
+            ch_gunc_db.first() // db path
+        )
         
         // sourmash
         SOURMASH_SKETCH(
@@ -54,7 +54,4 @@ workflow ASSEMBLY_QC {
             false,
             false
         )
-
-    emit:
-        quast_res = QUAST.out.results
 }
